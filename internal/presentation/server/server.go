@@ -10,11 +10,10 @@ import (
 )
 
 var (
-	DbService *db.DB
+	DbService    *db.DB
 	CacheService interfaces.CacheRepo
-	UserService interfaces.UserRepo
+	UserService  interfaces.UserRepo
 )
-
 
 // Server определяет сервер с сервисами
 type Server struct {

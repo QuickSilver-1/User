@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 	"user/internal/domain"
+	"user/internal/presentation/logger"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
@@ -69,7 +70,7 @@ func (Handlers) Get(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, user)
 }
 
-func(Handlers) Put(ctx *gin.Context) {
+func (Handlers) Put(ctx *gin.Context) {
 	idStr := ctx.Request.URL.Query().Get("id")
 	if idStr == "" {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Id is required"})
@@ -106,7 +107,12 @@ func(Handlers) Put(ctx *gin.Context) {
 func validBody(ctx *gin.Context) *domain.User {
 	var user domain.User
 	err := json.NewDecoder(ctx.Request.Body).Decode(&user)
-	defer ctx.Request.Body.Close()
+	defer func() {
+		err := ctx.Request.Body.Close()
+		if err != nil {
+			logger.Logger.Error("Close body error")
+		}
+	}()
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid body"})
 		return nil

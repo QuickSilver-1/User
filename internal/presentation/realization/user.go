@@ -18,14 +18,14 @@ const (
 	NOT_UNIQUE_LOGIN = "23505"
 )
 
-type UserService struct{
-	db *db.DB
+type UserService struct {
+	db    *db.DB
 	cache interfaces.CacheRepo
 }
 
 func NewUserService(db *db.DB, cache interfaces.CacheRepo) *UserService {
 	return &UserService{
-		db: db,
+		db:    db,
 		cache: cache,
 	}
 }
@@ -33,7 +33,7 @@ func NewUserService(db *db.DB, cache interfaces.CacheRepo) *UserService {
 func (s *UserService) Create(user domain.User) (*domain.Id, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	
+
 	var id domain.Id
 	logger.Logger.Debug("Creating user...")
 	err := s.db.Db.QueryRowContext(ctx, `INSERT INTO users (first_name, last_name, birthday, login, password) VALUES ($1, $2, $3, $4, $5) RETURNING id`, user.FirstName, user.LastName, user.BirthDay, user.Login, user.Password).Scan(&id)
@@ -53,7 +53,7 @@ func (s *UserService) Create(user domain.User) (*domain.Id, error) {
 func (s *UserService) Get(id domain.Id) (*domain.User, error) {
 	cacheUser, err := s.cache.GetByKey(id)
 	if err != nil {
-		logger.Logger.Error(fmt.Sprintf("Geting Redis key error: %v", err))
+		logger.Logger.Error(fmt.Sprintf("Getting Redis key error: %v", err))
 		return nil, err
 	}
 
@@ -63,16 +63,16 @@ func (s *UserService) Get(id domain.Id) (*domain.User, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	
-	logger.Logger.Debug("Geting user...")
+
+	logger.Logger.Debug("Getting user...")
 	var user domain.User
 	err = s.db.Db.QueryRowContext(ctx, `SELECT id, first_name, last_name, birthday, login FROM users WHERE id = $1`, id).Scan(&user.Id, &user.FirstName, &user.LastName, &user.BirthDay, &user.Login)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
-		logger.Logger.Error(fmt.Sprintf("Geting user error: %v", err))
-		return nil, fmt.Errorf("geting postgres user error: %v", err)
+		logger.Logger.Error(fmt.Sprintf("Getting user error: %v", err))
+		return nil, fmt.Errorf("getting postgres user error: %v", err)
 	}
 
 	user.Password = "***"

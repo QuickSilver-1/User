@@ -9,10 +9,10 @@ type CacheRepo interface {
 
 	// GetText получает пользователя из кэша по идентификатору
 	GetByKey(domain.Id) (*domain.User, error)
-	
+
 	// DelKey удаляет ключ из кэша
 	DelKey(domain.Id) error
-	
+
 	// Close закрывает подключение
 	Close() error
 }

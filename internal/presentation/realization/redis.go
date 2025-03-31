@@ -43,7 +43,7 @@ func (r *RedisRepo) CreateKey(id domain.Id, user domain.User) error {
 
 	userJson, err := json.Marshal(user)
 	if err != nil {
-		return errors.New("object marshalling error")
+		return errors.New("object marshaling error")
 	}
 
 	res := r.db.Set(ctx, strconv.FormatUint(id, 10), userJson, 0)
