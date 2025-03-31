@@ -1,0 +1,136 @@
+openapi: 3.0.0
+info:
+  title: User API
+  version: 1.0.0
+  description: CRUD Users
+  contact:
+    name: Roman
+    email: raprusakov@edu.hse.ru
+servers:
+  - url: http://localhost:8080
+    description: Локальный сервер разработки
+paths:
+  /create:
+    post:
+      summary: Создать пользователя
+      description: Создание нового пользователя с указанными данными.
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Успешное создание пользователя
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: ID нового пользователя
+        '400':
+          description: Неверные данные запроса
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Описание ошибки
+        '500':
+          description: Внутренняя ошибка сервера
+  /get:
+    get:
+      summary: Получить пользователя
+      description: Получение информации о пользователе по ID.
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+            description: ID пользователя
+      responses:
+        '200':
+          description: Информация о пользователе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Неверные данные запроса
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Описание ошибки
+        '500':
+          description: Внутренняя ошибка сервера
+  /put:
+    put:
+      summary: Обновить пользователя
+      description: Обновление данных пользователя.
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+            description: ID пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Успешное обновление
+        '400':
+          description: Неверные данные запроса
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Описание ошибки
+        '500':
+          description: Внутренняя ошибка сервера
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID пользователя
+        firstName:
+          type: string
+          description: Имя пользователя
+        lastName:
+          type: string
+          description: Фамилия пользователя
+        birthday:
+          type: string
+          description: Дата рождения пользователя
+        login:
+          type: string
+          description: Логин пользователя (email)
+        password:
+          type: string
+          description: Пароль пользователя (хэшированный)
