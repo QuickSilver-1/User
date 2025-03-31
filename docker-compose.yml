@@ -1,0 +1,25 @@
+version: '3.0'
+
+services:
+  user:
+    build: .
+    container_name: app
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    environment:
+      # параметры подключения к БД
+      - DATABASE_PORT=${DB_PORT}
+      - DATABASE_USER=${DB_USER}
+      - DATABASE_PASSWORD=${DB_PASSWORD}
+      - DATABASE_NAME=${DB_NAME}
+      - DATABASE_HOST=${DB_HOST}
+      # параметры подключения к Redis
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      # сервис
+      - SERVER_PORT=${SERVER_PORT}
+
+networks:
+  default:
+    driver: bridge
